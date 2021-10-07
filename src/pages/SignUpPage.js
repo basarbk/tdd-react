@@ -35,6 +35,7 @@ class SignUpPage extends Component {
       if (error.response.status === 400) {
         this.setState({ errors: error.response.data.validationErrors });
       }
+      this.setState({ apiProgress: false });
     }
   };
 
