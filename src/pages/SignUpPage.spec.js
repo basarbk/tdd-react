@@ -53,13 +53,23 @@ describe('Sign Up Page', () => {
     });
   });
   describe('Interactions', () => {
-    it('enables the button when password and password repeat fields have same value', () => {
+    let button;
+
+    const setup = () => {
       render(<SignUpPage />);
+      const usernameInput = screen.getByLabelText('Username');
+      const emailInput = screen.getByLabelText('E-mail');
       const passwordInput = screen.getByLabelText('Password');
       const passwordRepeatInput = screen.getByLabelText('Password Repeat');
+      userEvent.type(usernameInput, 'user1');
+      userEvent.type(emailInput, 'user1@mail.com');
       userEvent.type(passwordInput, 'P4ssword');
       userEvent.type(passwordRepeatInput, 'P4ssword');
-      const button = screen.queryByRole('button', { name: 'Sign Up' });
+      button = screen.queryByRole('button', { name: 'Sign Up' });
+    };
+
+    it('enables the button when password and password repeat fields have same value', () => {
+      setup();
       expect(button).toBeEnabled();
     });
     it('sends username, email and password to backend after clicking the button', async () => {
@@ -71,16 +81,7 @@ describe('Sign Up Page', () => {
         })
       );
       server.listen();
-      render(<SignUpPage />);
-      const usernameInput = screen.getByLabelText('Username');
-      const emailInput = screen.getByLabelText('E-mail');
-      const passwordInput = screen.getByLabelText('Password');
-      const passwordRepeatInput = screen.getByLabelText('Password Repeat');
-      userEvent.type(usernameInput, 'user1');
-      userEvent.type(emailInput, 'user1@mail.com');
-      userEvent.type(passwordInput, 'P4ssword');
-      userEvent.type(passwordRepeatInput, 'P4ssword');
-      const button = screen.queryByRole('button', { name: 'Sign Up' });
+      setup();
       userEvent.click(button);
 
       await new Promise((resolve) => setTimeout(resolve, 500));
@@ -90,6 +91,35 @@ describe('Sign Up Page', () => {
         email: 'user1@mail.com',
         password: 'P4ssword'
       });
+    });
+    it('disables button when there is an ongoing api call', async () => {
+      let counter = 0;
+      const server = setupServer(
+        rest.post('/api/1.0/users', (req, res, ctx) => {
+          counter += 1;
+          return res(ctx.status(200));
+        })
+      );
+      server.listen();
+      setup();
+      userEvent.click(button);
+      userEvent.click(button);
+
+      await new Promise((resolve) => setTimeout(resolve, 500));
+      expect(counter).toBe(1);
+    });
+    it('displays spinner after clicking the submit', async () => {
+      const server = setupServer(
+        rest.post('/api/1.0/users', (req, res, ctx) => {
+          return res(ctx.status(200));
+        })
+      );
+      server.listen();
+      setup();
+      expect(screen.queryByRole('status')).not.toBeInTheDocument();
+      userEvent.click(button);
+      const spinner = screen.getByRole('status');
+      expect(spinner).toBeInTheDocument();
     });
   });
 });
