@@ -113,18 +113,6 @@ class SignUpPage extends Component {
             Please check your e-mail to activate your account
           </div>
         )}
-        <img
-          src="https://www.countryflags.io/tr/flat/24.png"
-          title="Türkçe"
-          onClick={() => this.props.i18n.changeLanguage('tr')}
-          alt="Turkish Flag"
-        />
-        <img
-          src="https://www.countryflags.io/gb/flat/24.png"
-          title="English"
-          onClick={() => this.props.i18n.changeLanguage('en')}
-          alt="Great Britain Flag"
-        />
       </div>
     );
   }

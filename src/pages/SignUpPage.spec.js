@@ -1,11 +1,12 @@
 import SignUpPage from './SignUpPage';
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, screen, waitFor, act } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { setupServer } from 'msw/node';
 import { rest } from 'msw';
-import '../locale/i18n';
+import i18n from '../locale/i18n';
 import en from '../locale/en.json';
 import tr from '../locale/tr.json';
+import LanguageSelector from '../components/LanguageSelector';
 
 describe('Sign Up Page', () => {
   describe('Layout', () => {
@@ -203,21 +204,23 @@ describe('Sign Up Page', () => {
     );
   });
   describe('Internationalization', () => {
-    it('initially displays all text in English', () => {
-      render(<SignUpPage />);
-      expect(
-        screen.getByRole('heading', { name: en.signUp })
-      ).toBeInTheDocument();
-      expect(
-        screen.getByRole('button', { name: en.signUp })
-      ).toBeInTheDocument();
-      expect(screen.getByLabelText(en.username)).toBeInTheDocument();
-      expect(screen.getByLabelText(en.email)).toBeInTheDocument();
-      expect(screen.getByLabelText(en.password)).toBeInTheDocument();
-      expect(screen.getByLabelText(en.passwordRepeat)).toBeInTheDocument();
+    const setup = () => {
+      render(
+        <>
+          <SignUpPage />
+          <LanguageSelector />
+        </>
+      );
+    };
+
+    afterEach(() => {
+      act(() => {
+        i18n.changeLanguage('en');
+      });
     });
+
     it('displays all text in Turkish after changing the language', () => {
-      render(<SignUpPage />);
+      setup();
 
       const turkishToggle = screen.getByTitle('Türkçe');
       userEvent.click(turkishToggle);
@@ -233,8 +236,23 @@ describe('Sign Up Page', () => {
       expect(screen.getByLabelText(tr.password)).toBeInTheDocument();
       expect(screen.getByLabelText(tr.passwordRepeat)).toBeInTheDocument();
     });
+
+    it('initially displays all text in English', () => {
+      setup();
+      expect(
+        screen.getByRole('heading', { name: en.signUp })
+      ).toBeInTheDocument();
+      expect(
+        screen.getByRole('button', { name: en.signUp })
+      ).toBeInTheDocument();
+      expect(screen.getByLabelText(en.username)).toBeInTheDocument();
+      expect(screen.getByLabelText(en.email)).toBeInTheDocument();
+      expect(screen.getByLabelText(en.password)).toBeInTheDocument();
+      expect(screen.getByLabelText(en.passwordRepeat)).toBeInTheDocument();
+    });
+
     it('displays all text in English after changing back from Turkish', () => {
-      render(<SignUpPage />);
+      setup();
 
       const turkishToggle = screen.getByTitle('Türkçe');
       userEvent.click(turkishToggle);
