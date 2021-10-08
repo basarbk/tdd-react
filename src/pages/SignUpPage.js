@@ -34,7 +34,11 @@ class SignUpPage extends Component {
     };
     this.setState({ apiProgress: true });
     try {
-      await axios.post('/api/1.0/users', body);
+      await axios.post('/api/1.0/users', body, {
+        headers: {
+          'Accept-Language': this.props.i18n.language
+        }
+      });
       this.setState({ signUpSuccess: true });
     } catch (error) {
       if (error.response.status === 400) {
