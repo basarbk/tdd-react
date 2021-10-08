@@ -3,6 +3,7 @@ import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { setupServer } from 'msw/node';
 import { rest } from 'msw';
+import '../locale/i18n';
 
 describe('Sign Up Page', () => {
   describe('Layout', () => {
