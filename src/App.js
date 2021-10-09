@@ -4,52 +4,38 @@ import LoginPage from './pages/LoginPage';
 import UserPage from './pages/UserPage';
 import LanguageSelector from './components/LanguageSelector';
 import { useTranslation } from 'react-i18next';
-import { useState } from 'react';
 import logo from './assets/hoaxify.png';
+import { BrowserRouter as Router, Route, Link } from 'react-router-dom';
 
 function App() {
   const { t } = useTranslation();
 
-  const [path, setPath] = useState(window.location.pathname);
-
-  const onClickLink = (event) => {
-    event.preventDefault();
-    const path = event.currentTarget.attributes.href.value;
-    window.history.pushState({}, '', path);
-    setPath(path);
-  };
-
   return (
-    <>
+    <Router>
       <nav className="navbar navbar-expand navbar-light bg-light shadow-sm">
         <div className="container">
-          <a
-            className="navbar-brand"
-            href="/"
-            title="Home"
-            onClick={onClickLink}
-          >
+          <Link className="navbar-brand" to="/" title="Home">
             <img src={logo} alt="Hoaxify" width="60" />
             Hoaxify
-          </a>
+          </Link>
           <ul className="navbar-nav">
-            <a className="nav-link" href="/signup" onClick={onClickLink}>
+            <Link className="nav-link" to="/signup">
               {t('signUp')}
-            </a>
-            <a className="nav-link" href="/login" onClick={onClickLink}>
+            </Link>
+            <Link className="nav-link" to="/login">
               Login
-            </a>
+            </Link>
           </ul>
         </div>
       </nav>
       <div className="container">
-        {path === '/' && <HomePage />}
-        {path === '/signup' && <SignUpPage />}
-        {path === '/login' && <LoginPage />}
-        {path.startsWith('/user/') && <UserPage />}
+        <Route exact path="/" component={HomePage} />
+        <Route path="/signup" component={SignUpPage} />
+        <Route path="/login" component={LoginPage} />
+        <Route path="/user/:id" component={UserPage} />
         <LanguageSelector />
       </div>
-    </>
+    </Router>
   );
 }
 
