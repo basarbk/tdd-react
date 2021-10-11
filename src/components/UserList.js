@@ -12,19 +12,26 @@ class UserList extends Component {
   };
 
   componentDidMount() {
-    loadUsers().then((response) => {
-      this.setState({ page: response.data });
-    });
+    this.loadData();
   }
 
+  loadData = async (pageIndex) => {
+    try {
+      const response = await loadUsers(pageIndex);
+      this.setState({ page: response.data });
+    } catch (error) {}
+  };
+
   render() {
+    const { totalPages, page, content } = this.state.page;
+
     return (
       <div className="card">
         <div className="card-header text-center">
           <h3>Users</h3>
         </div>
         <ul className="list-group list-group-flush">
-          {this.state.page.content.map((user) => {
+          {content.map((user) => {
             return (
               <li className="list-group-item list-group-item-action">
                 {user.username}
@@ -32,6 +39,24 @@ class UserList extends Component {
             );
           })}
         </ul>
+        <div className="card-footer">
+          {page !== 0 && (
+            <button
+              className="btn btn-outline-secondary btn-sm"
+              onClick={() => this.loadData(page - 1)}
+            >
+              &lt; previous
+            </button>
+          )}
+          {totalPages > page + 1 && (
+            <button
+              className="btn btn-outline-secondary btn-sm"
+              onClick={() => this.loadData(page + 1)}
+            >
+              next &gt;
+            </button>
+          )}
+        </div>
       </div>
     );
   }
