@@ -6,6 +6,17 @@ import { rest } from 'msw';
 const server = setupServer(
   rest.post('/api/1.0/users/token/:token', (req, res, ctx) => {
     return res(ctx.status(200));
+  }),
+  rest.get('/api/1.0/users', (req, res, ctx) => {
+    return res(
+      ctx.status(200),
+      ctx.json({
+        content: [],
+        page: 0,
+        size: 0,
+        totalPages: 0
+      })
+    );
   })
 );
 
