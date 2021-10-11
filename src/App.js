@@ -29,7 +29,7 @@ function App() {
           </ul>
         </div>
       </nav>
-      <div className="container">
+      <div className="container pt-3">
         <Route exact path="/" component={HomePage} />
         <Route path="/signup" component={SignUpPage} />
         <Route path="/login" component={LoginPage} />

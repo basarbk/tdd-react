@@ -1,5 +1,7 @@
 import { activate } from '../api/apiCalls';
 import { useEffect, useState } from 'react';
+import Alert from '../components/Alert';
+import Spinner from '../components/Spinner';
 
 const AccountActivationPage = (props) => {
   const [result, setResult] = useState();
@@ -15,13 +17,15 @@ const AccountActivationPage = (props) => {
       });
   }, [props.match.params.token]);
 
-  let content = <span className="spinner-border" role="status"></span>;
+  let content = (
+    <Alert type="secondary" center>
+      <Spinner size="big" />
+    </Alert>
+  );
   if (result === 'success') {
-    content = (
-      <div className="alert alert-success mt-3">Account is activated</div>
-    );
+    content = <Alert>Account is activated</Alert>;
   } else if (result === 'fail') {
-    content = <div className="alert alert-danger mt-3">Activation failure</div>;
+    content = <Alert type="danger">Activation failure</Alert>;
   }
 
   return <div data-testid="activation-page">{content}</div>;
