@@ -3,6 +3,7 @@ import defaultProfileImage from '../assets/profile.png';
 
 const UserListItem = (props) => {
   const { user, history } = props;
+
   return (
     <li
       className="list-group-item list-group-item-action"
