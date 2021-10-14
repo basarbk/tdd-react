@@ -3,13 +3,11 @@ import {
   render,
   screen,
   waitFor,
-  act,
   waitForElementToBeRemoved
 } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { setupServer } from 'msw/node';
 import { rest } from 'msw';
-import i18n from '../locale/i18n';
 import en from '../locale/en.json';
 import tr from '../locale/tr.json';
 import LanguageSelector from '../components/LanguageSelector';
@@ -225,12 +223,6 @@ describe('Sign Up Page', () => {
       passwordInput = screen.getByLabelText('Password');
       passwordRepeatInput = screen.getByLabelText('Password Repeat');
     };
-
-    afterEach(() => {
-      act(() => {
-        i18n.changeLanguage('en');
-      });
-    });
 
     it('initially displays all text in English', () => {
       setup();
