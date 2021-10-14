@@ -24,6 +24,17 @@ const server = setupServer(
         totalPages: 0
       })
     );
+  }),
+  rest.get('/api/1.0/users/:id', (req, res, ctx) => {
+    const id = Number.parseInt(req.params.id);
+    return res(
+      ctx.json({
+        id: id,
+        username: 'user' + id,
+        email: 'user' + id + '@mail.com',
+        image: null
+      })
+    );
   })
 );
 
