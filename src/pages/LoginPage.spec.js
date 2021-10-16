@@ -7,13 +7,17 @@ import LoginPage from './LoginPage';
 import userEvent from '@testing-library/user-event';
 import { setupServer } from 'msw/node';
 import { rest } from 'msw';
-
+import LanguageSelector from '../components/LanguageSelector';
+import en from '../locale/en.json';
+import tr from '../locale/tr.json';
 let requestBody,
+  acceptLanguageHeader,
   count = 0;
 const server = setupServer(
   rest.post('/api/1.0/auth', (req, res, ctx) => {
     requestBody = req.body;
     count += 1;
+    acceptLanguageHeader = req.headers.get('Accept-Language');
     return res(ctx.status(401), ctx.json({ message: 'Incorrect credentials' }));
   })
 );
@@ -120,6 +124,69 @@ describe('Login Page', () => {
       const errorMessage = await screen.findByText('Incorrect credentials');
       userEvent.type(passwordInput, 'newP4ss');
       expect(errorMessage).not.toBeInTheDocument();
+    });
+  });
+  describe('Internationalization', () => {
+    let turkishToggle, englishToggle;
+    const setup = () => {
+      render(
+        <>
+          <LoginPage />
+          <LanguageSelector />
+        </>
+      );
+      turkishToggle = screen.getByTitle('Türkçe');
+      englishToggle = screen.getByTitle('English');
+    };
+
+    it('initially displays all text in English', () => {
+      setup();
+      expect(
+        screen.getByRole('heading', { name: en.login })
+      ).toBeInTheDocument();
+      expect(
+        screen.getByRole('button', { name: en.login })
+      ).toBeInTheDocument();
+      expect(screen.getByLabelText(en.email)).toBeInTheDocument();
+      expect(screen.getByLabelText(en.password)).toBeInTheDocument();
+    });
+    it('displays all text in Turkish after changing the language', () => {
+      setup();
+      userEvent.click(turkishToggle);
+
+      expect(
+        screen.getByRole('heading', { name: tr.login })
+      ).toBeInTheDocument();
+      expect(
+        screen.getByRole('button', { name: tr.login })
+      ).toBeInTheDocument();
+      expect(screen.getByLabelText(tr.email)).toBeInTheDocument();
+      expect(screen.getByLabelText(tr.password)).toBeInTheDocument();
+    });
+    it('sets accpet language header to en for outgoing request', async () => {
+      setup();
+      const emailInput = screen.getByLabelText('E-mail');
+      const passwordInput = screen.getByLabelText('Password');
+      userEvent.type(emailInput, 'user100@mail.com');
+      userEvent.type(passwordInput, 'P4ssword');
+      const button = screen.queryByRole('button', { name: 'Login' });
+      userEvent.click(button);
+      const spinner = screen.getByRole('status');
+      await waitForElementToBeRemoved(spinner);
+      expect(acceptLanguageHeader).toBe('en');
+    });
+    it('sets accpet language header to tr for outgoing request', async () => {
+      setup();
+      const emailInput = screen.getByLabelText('E-mail');
+      const passwordInput = screen.getByLabelText('Password');
+      userEvent.type(emailInput, 'user100@mail.com');
+      userEvent.type(passwordInput, 'P4ssword');
+      const button = screen.queryByRole('button', { name: 'Login' });
+      userEvent.click(turkishToggle);
+      userEvent.click(button);
+      const spinner = screen.getByRole('status');
+      await waitForElementToBeRemoved(spinner);
+      expect(acceptLanguageHeader).toBe('tr');
     });
   });
 });

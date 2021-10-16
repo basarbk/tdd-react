@@ -7,5 +7,6 @@
   "passwordMismatchValidation": "Password mismatch",
   "users": "Users",
   "nextPage": "next >",
-  "previousPage": "< previous"
+  "previousPage": "< previous",
+  "login": "Login"
 }

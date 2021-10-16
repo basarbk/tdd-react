@@ -7,5 +7,6 @@
   "passwordMismatchValidation": "Şifreniz eşleşmiyor",
   "users": "Kullanıcılar",
   "nextPage": "sonraki >",
-  "previousPage": "< önceki"
+  "previousPage": "< önceki",
+  "login": "Oturum Aç"
 }
