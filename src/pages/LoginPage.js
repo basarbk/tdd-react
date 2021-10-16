@@ -5,7 +5,7 @@ import Spinner from '../components/Spinner';
 import Alert from '../components/Alert';
 import { useTranslation } from 'react-i18next';
 
-const LoginPage = () => {
+const LoginPage = (props) => {
   const [email, setEmail] = useState();
   const [password, setPassword] = useState();
   const [apiProgress, setApiProgress] = useState(false);
@@ -22,6 +22,7 @@ const LoginPage = () => {
     setApiProgress(true);
     try {
       await login({ email, password });
+      props.history.push('/');
     } catch (error) {
       setFailMessage(error.response.data.message);
     }
