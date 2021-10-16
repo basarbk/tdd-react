@@ -1,19 +1,27 @@
 import Input from '../components/Input';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { login } from '../api/apiCalls';
 import Spinner from '../components/Spinner';
+import Alert from '../components/Alert';
 
 const LoginPage = () => {
   const [email, setEmail] = useState();
   const [password, setPassword] = useState();
   const [apiProgress, setApiProgress] = useState(false);
+  const [failMessage, setFailMessage] = useState();
+
+  useEffect(() => {
+    setFailMessage();
+  }, [email, password]);
 
   const submit = async (event) => {
     event.preventDefault();
     setApiProgress(true);
     try {
       await login({ email, password });
-    } catch (error) {}
+    } catch (error) {
+      setFailMessage(error.response.data.message);
+    }
     setApiProgress(false);
   };
 
@@ -40,6 +48,8 @@ const LoginPage = () => {
             type="password"
             onChange={(event) => setPassword(event.target.value)}
           />
+          {failMessage && <Alert type="danger">{failMessage}</Alert>}
+
           <div className="text-center">
             <button
               className="btn btn-primary"
