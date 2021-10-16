@@ -1,4 +1,4 @@
-import { render } from '@testing-library/react';
+import { render } from '../test/setup';
 import Input from './Input';
 
 it('has is-invalid class for input when help is set', () => {

@@ -4,7 +4,7 @@ import { login } from '../api/apiCalls';
 import Alert from '../components/Alert';
 import ButtonWithProgress from '../components/ButtonWithProgress';
 import { useTranslation } from 'react-i18next';
-import { AuthContext } from '../App';
+import { AuthContext } from '../state/AuthContextWrapper';
 
 const LoginPage = (props) => {
   const [email, setEmail] = useState();

@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, screen, waitFor } from '../test/setup';
 import UserPage from './UserPage';
 import { setupServer } from 'msw/node';
 import { rest } from 'msw';

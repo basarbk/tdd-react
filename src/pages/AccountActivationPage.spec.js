@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen } from '../test/setup';
 import AccountActivationPage from './AccountActivationPage';
 import { setupServer } from 'msw/node';
 import { rest } from 'msw';

@@ -1,13 +1,8 @@
-import {
-  render,
-  screen,
-  waitForElementToBeRemoved
-} from '@testing-library/react';
+import { render, screen, waitForElementToBeRemoved } from '../test/setup';
 import LoginPage from './LoginPage';
 import userEvent from '@testing-library/user-event';
 import { setupServer } from 'msw/node';
 import { rest } from 'msw';
-import LanguageSelector from '../components/LanguageSelector';
 import en from '../locale/en.json';
 import tr from '../locale/tr.json';
 let requestBody,
@@ -127,16 +122,10 @@ describe('Login Page', () => {
     });
   });
   describe('Internationalization', () => {
-    let turkishToggle, englishToggle;
+    let turkishToggle;
     const setup = () => {
-      render(
-        <>
-          <LoginPage />
-          <LanguageSelector />
-        </>
-      );
+      render(<LoginPage />);
       turkishToggle = screen.getByTitle('Türkçe');
-      englishToggle = screen.getByTitle('English');
     };
 
     it('initially displays all text in English', () => {
