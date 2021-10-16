@@ -3,7 +3,7 @@ import Input from '../components/Input';
 import { withTranslation } from 'react-i18next';
 import { signUp } from '../api/apiCalls';
 import Alert from '../components/Alert';
-import Spinner from '../components/Spinner';
+import ButtonWithProgress from '../components/ButtonWithProgress';
 
 class SignUpPage extends Component {
   state = {
@@ -96,14 +96,13 @@ class SignUpPage extends Component {
                 type="password"
               />
               <div className="text-center">
-                <button
-                  className="btn btn-primary"
-                  disabled={disabled || apiProgress}
+                <ButtonWithProgress
+                  disabled={disabled}
+                  apiProgress={apiProgress}
                   onClick={this.submit}
                 >
-                  {apiProgress && <Spinner />}
                   {t('signUp')}
-                </button>
+                </ButtonWithProgress>
               </div>
             </div>
           </form>
