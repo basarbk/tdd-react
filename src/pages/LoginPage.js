@@ -1,15 +1,18 @@
 import Input from '../components/Input';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import { login } from '../api/apiCalls';
 import Alert from '../components/Alert';
 import ButtonWithProgress from '../components/ButtonWithProgress';
 import { useTranslation } from 'react-i18next';
+import { AuthContext } from '../App';
 
 const LoginPage = (props) => {
   const [email, setEmail] = useState();
   const [password, setPassword] = useState();
   const [apiProgress, setApiProgress] = useState(false);
   const [failMessage, setFailMessage] = useState();
+
+  const auth = useContext(AuthContext);
 
   const { t } = useTranslation();
 
@@ -23,11 +26,10 @@ const LoginPage = (props) => {
     try {
       const response = await login({ email, password });
       props.history.push('/');
-      const auth = {
+      auth.onLoginSuccess({
         isLoggedIn: true,
         id: response.data.id
-      };
-      props.onLoginSuccess(auth);
+      });
     } catch (error) {
       setFailMessage(error.response.data.message);
     }
