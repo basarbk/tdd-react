@@ -7,8 +7,13 @@ import LanguageSelector from './components/LanguageSelector';
 import { useTranslation } from 'react-i18next';
 import logo from './assets/hoaxify.png';
 import { BrowserRouter as Router, Route, Link } from 'react-router-dom';
+import { useState } from 'react';
 
 function App() {
+  const [auth, setAuth] = useState({
+    isLoggedIn: false,
+    id: ''
+  });
   const { t } = useTranslation();
 
   return (
@@ -20,19 +25,33 @@ function App() {
             Hoaxify
           </Link>
           <ul className="navbar-nav">
-            <Link className="nav-link" to="/signup">
-              {t('signUp')}
-            </Link>
-            <Link className="nav-link" to="/login">
-              Login
-            </Link>
+            {!auth.isLoggedIn && (
+              <>
+                <Link className="nav-link" to="/signup">
+                  {t('signUp')}
+                </Link>
+                <Link className="nav-link" to="/login">
+                  Login
+                </Link>
+              </>
+            )}
+            {auth.isLoggedIn && (
+              <Link className="nav-link" to={`/user/${auth.id}`}>
+                My Profile
+              </Link>
+            )}
           </ul>
         </div>
       </nav>
       <div className="container pt-3">
         <Route exact path="/" component={HomePage} />
         <Route path="/signup" component={SignUpPage} />
-        <Route path="/login" component={LoginPage} />
+        <Route
+          path="/login"
+          render={(reactRouterProps) => {
+            return <LoginPage {...reactRouterProps} onLoginSuccess={setAuth} />;
+          }}
+        />
         <Route path="/user/:id" component={UserPage} />
         <Route path="/activate/:token" component={AccountActivationPage} />
         <LanguageSelector />

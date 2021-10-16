@@ -21,8 +21,13 @@ const LoginPage = (props) => {
     event.preventDefault();
     setApiProgress(true);
     try {
-      await login({ email, password });
+      const response = await login({ email, password });
       props.history.push('/');
+      const auth = {
+        isLoggedIn: true,
+        id: response.data.id
+      };
+      props.onLoginSuccess(auth);
     } catch (error) {
       setFailMessage(error.response.data.message);
     }
