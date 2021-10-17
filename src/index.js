@@ -5,12 +5,32 @@ import reportWebVitals from './reportWebVitals';
 import './locale/i18n';
 import AuthContextWrapper from './state/AuthContextWrapper';
 import { BrowserRouter as Router } from 'react-router-dom';
+import { Provider } from 'react-redux';
+import { createStore } from 'redux';
+
+const reducer = (state, action) => {
+  console.log({ state, action });
+  return state;
+};
+
+const initialState = {
+  isLoggedIn: true,
+  id: 25
+};
+
+const store = createStore(
+  reducer,
+  initialState,
+  window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
+);
 
 ReactDOM.render(
   <React.StrictMode>
     <Router>
       <AuthContextWrapper>
-        <App />
+        <Provider store={store}>
+          <App />
+        </Provider>
       </AuthContextWrapper>
     </Router>
   </React.StrictMode>,
