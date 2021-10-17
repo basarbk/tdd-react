@@ -3,18 +3,22 @@ import ReactDOM from 'react-dom';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import './locale/i18n';
-import AuthContextWrapper from './state/AuthContextWrapper';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import { createStore } from 'redux';
 
 const reducer = (state, action) => {
-  console.log({ state, action });
+  if (action.type === 'login-success') {
+    const newState = { ...state };
+    newState.id = action.payload.id;
+    newState.isLoggedIn = true;
+    return newState;
+  }
   return state;
 };
 
 const initialState = {
-  isLoggedIn: true,
+  isLoggedIn: false,
   id: 25
 };
 
@@ -27,11 +31,9 @@ const store = createStore(
 ReactDOM.render(
   <React.StrictMode>
     <Router>
-      <AuthContextWrapper>
-        <Provider store={store}>
-          <App />
-        </Provider>
-      </AuthContextWrapper>
+      <Provider store={store}>
+        <App />
+      </Provider>
     </Router>
   </React.StrictMode>,
   document.getElementById('root')
