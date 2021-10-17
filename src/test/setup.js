@@ -1,16 +1,17 @@
 import React from 'react';
 import { render } from '@testing-library/react';
-import AuthContextWrapper from '../state/AuthContextWrapper';
 import { BrowserRouter as Router } from 'react-router-dom';
 import LanguageSelector from '../components/LanguageSelector';
+import { Provider } from 'react-redux';
+import createStore from '../state/store';
 
 const RootWrapper = ({ children }) => {
   return (
     <Router>
-      <AuthContextWrapper>
+      <Provider store={createStore()}>
         {children}
         <LanguageSelector />
-      </AuthContextWrapper>
+      </Provider>
     </Router>
   );
 };
