@@ -1,18 +1,12 @@
 import { createStore } from 'redux';
 import authReducer from './authReducer';
+import storage from './storage';
 
 const createAppStore = () => {
-  let initialState = {
+  const initialState = storage.getItem('auth') || {
     isLoggedIn: false,
     id: ''
   };
-
-  const storedState = localStorage.getItem('auth');
-  if (storedState !== null) {
-    try {
-      initialState = JSON.parse(storedState);
-    } catch (error) {}
-  }
 
   const store = createStore(
     authReducer,
@@ -21,7 +15,7 @@ const createAppStore = () => {
   );
 
   store.subscribe(() => {
-    localStorage.setItem('auth', JSON.stringify(store.getState()));
+    storage.setItem('auth', store.getState());
   });
 
   return store;

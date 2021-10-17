@@ -3,6 +3,7 @@ import App from './App';
 import userEvent from '@testing-library/user-event';
 import { setupServer } from 'msw/node';
 import { rest } from 'msw';
+import storage from './state/storage';
 
 const server = setupServer(
   rest.post('/api/1.0/users/token/:token', (req, res, ctx) => {
@@ -195,11 +196,11 @@ describe('Login', () => {
   it('stores logged in state in local storage', async () => {
     setupLoggedIn();
     await screen.findByTestId('home-page');
-    const state = JSON.parse(localStorage.getItem('auth'));
+    const state = storage.getItem('auth');
     expect(state.isLoggedIn).toBeTruthy();
   });
   it('displays layout of logged in state', () => {
-    localStorage.setItem('auth', JSON.stringify({ isLoggedIn: true }));
+    storage.setItem('auth', { isLoggedIn: true });
     setup('/');
     const myProfileLink = screen.queryByRole('link', {
       name: 'My Profile'
