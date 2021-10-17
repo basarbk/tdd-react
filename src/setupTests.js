@@ -9,4 +9,5 @@ afterEach(() => {
   act(() => {
     i18n.changeLanguage('en');
   });
+  localStorage.clear();
 });

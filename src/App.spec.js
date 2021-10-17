@@ -192,6 +192,20 @@ describe('Login', () => {
     const username = await screen.findByText('user5');
     expect(username).toBeInTheDocument();
   });
+  it('stores logged in state in local storage', async () => {
+    setupLoggedIn();
+    await screen.findByTestId('home-page');
+    const state = JSON.parse(localStorage.getItem('auth'));
+    expect(state.isLoggedIn).toBeTruthy();
+  });
+  it('displays layout of logged in state', () => {
+    localStorage.setItem('auth', JSON.stringify({ isLoggedIn: true }));
+    setup('/');
+    const myProfileLink = screen.queryByRole('link', {
+      name: 'My Profile'
+    });
+    expect(myProfileLink).toBeInTheDocument();
+  });
 });
 
 console.error = () => {};
