@@ -1,9 +1,10 @@
 const reducer = (state, action) => {
   if (action.type === 'login-success') {
-    const newState = { ...state };
-    newState.id = action.payload.id;
-    newState.isLoggedIn = true;
-    return newState;
+    return {
+      ...state,
+      ...action.payload,
+      isLoggedIn: true
+    };
   }
   return state;
 };
