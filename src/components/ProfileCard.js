@@ -62,12 +62,19 @@ const ProfileCard = (props) => {
       <>
         <h3>{newUsername}</h3>
         {user.id === id && (
-          <button
-            className="btn btn-outline-success"
-            onClick={() => setEditMode(true)}
-          >
-            Edit
-          </button>
+          <>
+            <div>
+              <button
+                className="btn btn-outline-success"
+                onClick={() => setEditMode(true)}
+              >
+                Edit
+              </button>
+            </div>
+            <div className="pt-2">
+              <button className="btn btn-danger">Delete My Account</button>
+            </div>
+          </>
         )}
       </>
     );

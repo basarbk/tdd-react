@@ -183,4 +183,16 @@ describe('Profile Card', () => {
     const header = screen.getByRole('heading', { name: 'new-username' });
     expect(header).toBeInTheDocument();
   });
+  it('displays delete button when logged in user is shown on card', () => {
+    setup();
+    expect(
+      screen.getByRole('button', { name: 'Delete My Account' })
+    ).toBeInTheDocument();
+  });
+  it('does not display delete button for another user', () => {
+    setup({ id: 2, username: 'user2' });
+    expect(
+      screen.queryByRole('button', { name: 'Delete My Account' })
+    ).not.toBeInTheDocument();
+  });
 });
