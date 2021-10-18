@@ -5,6 +5,11 @@ const reducer = (state, action) => {
       ...action.payload,
       isLoggedIn: true
     };
+  } else if (action.type === 'user-update-success') {
+    return {
+      ...state,
+      username: action.payload.username
+    };
   }
   return state;
 };

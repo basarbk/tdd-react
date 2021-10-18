@@ -1,5 +1,5 @@
 import defaultProfileImage from '../assets/profile.png';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { useState } from 'react';
 import Input from './Input';
 import ButtonWithProgress from './ButtonWithProgress';
@@ -8,12 +8,14 @@ import { updateUser } from '../api/apiCalls';
 const ProfileCard = (props) => {
   const [inEditMode, setEditMode] = useState(false);
   const [apiProgress, setApiProgress] = useState(false);
+  const dispatch = useDispatch();
 
   const { user } = props;
   const [newUsername, setNewUsername] = useState(user.username);
 
-  const { id, header } = useSelector((store) => ({
+  const { id, username, header } = useSelector((store) => ({
     id: store.id,
+    username: store.username,
     header: store.header
   }));
 
@@ -22,8 +24,19 @@ const ProfileCard = (props) => {
     try {
       await updateUser(id, { username: newUsername }, header);
       setEditMode(false);
+      dispatch({
+        type: 'user-update-success',
+        payload: {
+          username: newUsername
+        }
+      });
     } catch (error) {}
     setApiProgress(false);
+  };
+
+  const onClickCancel = () => {
+    setEditMode(false);
+    setNewUsername(username);
   };
 
   let content;
@@ -40,7 +53,9 @@ const ProfileCard = (props) => {
         <ButtonWithProgress onClick={onClickSave} apiProgress={apiProgress}>
           Save
         </ButtonWithProgress>{' '}
-        <button className="btn btn-outline-secondary">Cancel</button>
+        <button className="btn btn-outline-secondary" onClick={onClickCancel}>
+          Cancel
+        </button>
       </>
     );
   } else {
