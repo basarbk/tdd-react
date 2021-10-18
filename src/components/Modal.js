@@ -1,4 +1,11 @@
-const Modal = () => {
+const Modal = (props) => {
+  const {
+    content,
+    confirmButton,
+    cancelButton,
+    onClickCancel,
+    onClickConfirm
+  } = props;
   return (
     <div
       className="bg-black bg-opacity-50 d-block modal show"
@@ -8,24 +15,35 @@ const Modal = () => {
       <div className="modal-dialog">
         <div className="modal-content">
           <div className="modal-body">
-            <p>Are you sure to delete your account?</p>
+            <p>{content}</p>
           </div>
           <div className="modal-footer">
             <button
               type="button"
               className="btn btn-secondary"
-              data-bs-dismiss="modal"
+              onClick={onClickCancel}
             >
-              Cancel
+              {cancelButton}
             </button>
-            <button type="button" className="btn btn-primary">
-              Yes
+            <button
+              type="button"
+              className="btn btn-primary"
+              onClick={onClickConfirm}
+            >
+              {confirmButton}
             </button>
           </div>
         </div>
       </div>
     </div>
   );
+};
+
+Modal.defaultProps = {
+  confirmButton: 'Yes',
+  cancelButton: 'Cancel',
+  onClickCancel: () => console.log('onClickCancel is not set'),
+  onClickConfirm: () => console.log('onClickConfirm is not set')
 };
 
 export default Modal;

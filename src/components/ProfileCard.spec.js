@@ -219,4 +219,14 @@ describe('Profile Card', () => {
     ).toBeInTheDocument();
     expect(screen.queryByRole('button', { name: 'Yes' })).toBeInTheDocument();
   });
+  it('removes modal after clicking cancel', () => {
+    setup();
+    const deleteButton = screen.queryByRole('button', {
+      name: 'Delete My Account'
+    });
+    userEvent.click(deleteButton);
+    userEvent.click(screen.queryByRole('button', { name: 'Cancel' }));
+    const modal = screen.queryByTestId('modal');
+    expect(modal).not.toBeInTheDocument();
+  });
 });

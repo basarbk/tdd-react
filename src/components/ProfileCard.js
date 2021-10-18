@@ -101,7 +101,12 @@ const ProfileCard = (props) => {
         </div>
         <div className="card-body">{content}</div>
       </div>
-      {modalVisible && <Modal />}
+      {modalVisible && (
+        <Modal
+          content="Are you sure to delete your account?"
+          onClickCancel={() => setModalVisible(false)}
+        />
+      )}
     </>
   );
 };
