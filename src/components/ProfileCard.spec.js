@@ -195,4 +195,28 @@ describe('Profile Card', () => {
       screen.queryByRole('button', { name: 'Delete My Account' })
     ).not.toBeInTheDocument();
   });
+  it('displays modal after clicking delete', () => {
+    setup();
+    expect(screen.queryByTestId('modal')).not.toBeInTheDocument();
+    const deleteButton = screen.queryByRole('button', {
+      name: 'Delete My Account'
+    });
+    userEvent.click(deleteButton);
+    const modal = screen.queryByTestId('modal');
+    expect(modal).toBeInTheDocument();
+  });
+  it('displays confirmation question with cancel and confirm buttons', () => {
+    setup();
+    const deleteButton = screen.queryByRole('button', {
+      name: 'Delete My Account'
+    });
+    userEvent.click(deleteButton);
+    expect(
+      screen.queryByText('Are you sure to delete your account?')
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByRole('button', { name: 'Cancel' })
+    ).toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: 'Yes' })).toBeInTheDocument();
+  });
 });

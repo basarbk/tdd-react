@@ -3,11 +3,13 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useState } from 'react';
 import Input from './Input';
 import ButtonWithProgress from './ButtonWithProgress';
+import Modal from './Modal';
 import { updateUser } from '../api/apiCalls';
 
 const ProfileCard = (props) => {
   const [inEditMode, setEditMode] = useState(false);
   const [apiProgress, setApiProgress] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
   const dispatch = useDispatch();
 
   const { user } = props;
@@ -72,7 +74,12 @@ const ProfileCard = (props) => {
               </button>
             </div>
             <div className="pt-2">
-              <button className="btn btn-danger">Delete My Account</button>
+              <button
+                className="btn btn-danger"
+                onClick={() => setModalVisible(true)}
+              >
+                Delete My Account
+              </button>
             </div>
           </>
         )}
@@ -81,18 +88,21 @@ const ProfileCard = (props) => {
   }
 
   return (
-    <div className="card text-center">
-      <div className="card-header">
-        <img
-          src={defaultProfileImage}
-          alt="profile"
-          width="200"
-          height="200"
-          className="rounded-circle shadow"
-        />
+    <>
+      <div className="card text-center">
+        <div className="card-header">
+          <img
+            src={defaultProfileImage}
+            alt="profile"
+            width="200"
+            height="200"
+            className="rounded-circle shadow"
+          />
+        </div>
+        <div className="card-body">{content}</div>
       </div>
-      <div className="card-body">{content}</div>
-    </div>
+      {modalVisible && <Modal />}
+    </>
   );
 };
 export default ProfileCard;
