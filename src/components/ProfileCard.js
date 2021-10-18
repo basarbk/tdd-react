@@ -2,12 +2,28 @@ import defaultProfileImage from '../assets/profile.png';
 import { useSelector } from 'react-redux';
 import { useState } from 'react';
 import Input from './Input';
+import ButtonWithProgress from './ButtonWithProgress';
+import { updateUser } from '../api/apiCalls';
 
 const ProfileCard = (props) => {
   const [inEditMode, setEditMode] = useState(false);
+  const [apiProgress, setApiProgress] = useState(false);
 
   const { user } = props;
-  const id = useSelector((store) => store.id);
+  const [newUsername, setNewUsername] = useState(user.username);
+
+  const { id, header } = useSelector((store) => ({
+    id: store.id,
+    header: store.header
+  }));
+
+  const onClickSave = async () => {
+    setApiProgress(true);
+    try {
+      await updateUser(id, { username: newUsername }, header);
+    } catch (error) {}
+    setApiProgress(false);
+  };
 
   let content;
 
@@ -18,8 +34,11 @@ const ProfileCard = (props) => {
           label="Change your username"
           id="username"
           initialValue={user.username}
+          onChange={(event) => setNewUsername(event.target.value)}
         />
-        <button className="btn btn-primary">Save</button>{' '}
+        <ButtonWithProgress onClick={onClickSave} apiProgress={apiProgress}>
+          Save
+        </ButtonWithProgress>{' '}
         <button className="btn btn-outline-secondary">Cancel</button>
       </>
     );
