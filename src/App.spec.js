@@ -29,6 +29,16 @@ const server = setupServer(
   }),
   rest.get('/api/1.0/users/:id', (req, res, ctx) => {
     const id = Number.parseInt(req.params.id);
+    if (id === 1) {
+      return res(
+        ctx.json({
+          id: 1,
+          username: 'user-in-list',
+          email: 'user-in-list@mail.com',
+          image: null
+        })
+      );
+    }
     return res(
       ctx.json({
         id: id,
@@ -206,6 +216,19 @@ describe('Login', () => {
       name: 'My Profile'
     });
     expect(myProfileLink).toBeInTheDocument();
+  });
+  it('refreshes user page from another user to the logged in user after clicking My Profile', async () => {
+    storage.setItem('auth', { id: 5, username: 'user5', isLoggedIn: true });
+    setup('/');
+    const user = await screen.findByText('user-in-list');
+    userEvent.click(user);
+    await screen.findByRole('heading', { name: 'user-in-list' });
+    const myProfileLink = screen.queryByRole('link', {
+      name: 'My Profile'
+    });
+    userEvent.click(myProfileLink);
+    const user5 = await screen.findByRole('heading', { name: 'user5' });
+    expect(user5).toBeInTheDocument();
   });
 });
 
