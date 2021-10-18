@@ -4,7 +4,10 @@ import { store } from '../state/store';
 
 axios.interceptors.request.use((request) => {
   request.headers['Accept-Language'] = i18n.language;
-  request.headers['Authorization'] = store.getState().header;
+  const { header } = store.getState();
+  if (header) {
+    request.headers['Authorization'] = header;
+  }
   return request;
 });
 
@@ -30,4 +33,8 @@ export const login = (body) => {
 
 export const updateUser = (id, body) => {
   return axios.put(`/api/1.0/users/${id}`, body);
+};
+
+export const logout = () => {
+  return axios.post('/api/1.0/logout');
 };

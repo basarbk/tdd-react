@@ -5,6 +5,8 @@ import { setupServer } from 'msw/node';
 import { rest } from 'msw';
 import storage from './state/storage';
 
+let logoutCount = 0;
+let header;
 const server = setupServer(
   rest.post('/api/1.0/users/token/:token', (req, res, ctx) => {
     return res(ctx.status(200));
@@ -28,6 +30,7 @@ const server = setupServer(
     );
   }),
   rest.get('/api/1.0/users/:id', (req, res, ctx) => {
+    header = req.headers.get('Authorization');
     const id = Number.parseInt(req.params.id);
     if (id === 1) {
       return res(
@@ -50,10 +53,15 @@ const server = setupServer(
   }),
   rest.post('/api/1.0/auth', (req, res, ctx) => {
     return res(ctx.status(200), ctx.json({ id: 5, username: 'user5' }));
+  }),
+  rest.post('/api/1.0/logout', (req, res, ctx) => {
+    logoutCount += 1;
+    return res(ctx.status(200));
   })
 );
 
 beforeEach(() => {
+  logoutCount = 0;
   server.resetHandlers();
 });
 
@@ -229,6 +237,47 @@ describe('Login', () => {
     userEvent.click(myProfileLink);
     const user5 = await screen.findByRole('heading', { name: 'user5' });
     expect(user5).toBeInTheDocument();
+  });
+});
+
+describe('Logout', () => {
+  let logoutLink;
+  const setupLoggedIn = () => {
+    storage.setItem('auth', {
+      id: 5,
+      username: 'user5',
+      isLoggedIn: true,
+      header: 'auth header value'
+    });
+    setup('/');
+    logoutLink = screen.queryByRole('link', {
+      name: 'Logout'
+    });
+  };
+  it('displays Logout link on navbar after successful login', () => {
+    setupLoggedIn();
+    expect(logoutLink).toBeInTheDocument();
+  });
+  it('displays login and sign up on navbar after clicking logout', async () => {
+    setupLoggedIn();
+    userEvent.click(logoutLink);
+    const loginLink = await screen.findByRole('link', { name: 'Login' });
+    expect(loginLink).toBeInTheDocument();
+  });
+  it('sends logout request to backend after clicking logout', async () => {
+    setupLoggedIn();
+    userEvent.click(logoutLink);
+    await screen.findByRole('link', { name: 'Login' });
+    expect(logoutCount).toBe(1);
+  });
+  it('removes authorization header from requests after user logs out', async () => {
+    setupLoggedIn();
+    userEvent.click(logoutLink);
+    await screen.findByRole('link', { name: 'Login' });
+    const user = screen.queryByText('user-in-list');
+    userEvent.click(user);
+    await screen.findByRole('heading', { name: 'user-in-list' });
+    expect(header).toBeFalsy();
   });
 });
 
