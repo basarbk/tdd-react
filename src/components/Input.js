@@ -1,5 +1,5 @@
 const Input = (props) => {
-  const { id, label, onChange, help, type } = props;
+  const { id, label, onChange, help, type, initialValue } = props;
 
   let inputClass = 'form-control';
   if (help) {
@@ -16,6 +16,7 @@ const Input = (props) => {
         className={inputClass}
         onChange={onChange}
         type={type || 'text'}
+        defaultValue={initialValue}
       />
       {help && <span className="invalid-feedback">{help}</span>}
     </div>
