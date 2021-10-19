@@ -4,11 +4,12 @@ import { useState } from 'react';
 import Input from './Input';
 import ButtonWithProgress from './ButtonWithProgress';
 import Modal from './Modal';
-import { updateUser } from '../api/apiCalls';
+import { updateUser, deleteUser } from '../api/apiCalls';
 
 const ProfileCard = (props) => {
   const [inEditMode, setEditMode] = useState(false);
-  const [apiProgress, setApiProgress] = useState(false);
+  const [deleteApiProgress, setDeleteApiProgress] = useState(false);
+  const [updateApiProgress, setUpdateApiProgress] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const dispatch = useDispatch();
 
@@ -21,7 +22,7 @@ const ProfileCard = (props) => {
   }));
 
   const onClickSave = async () => {
-    setApiProgress(true);
+    setUpdateApiProgress(true);
     try {
       await updateUser(id, { username: newUsername });
       setEditMode(false);
@@ -32,12 +33,20 @@ const ProfileCard = (props) => {
         }
       });
     } catch (error) {}
-    setApiProgress(false);
+    setUpdateApiProgress(false);
   };
 
   const onClickCancel = () => {
     setEditMode(false);
     setNewUsername(username);
+  };
+  const onClickDelete = async () => {
+    setDeleteApiProgress(true);
+    try {
+      await deleteUser(id);
+    } catch (error) {}
+
+    setDeleteApiProgress(false);
   };
 
   let content;
@@ -51,7 +60,10 @@ const ProfileCard = (props) => {
           initialValue={newUsername}
           onChange={(event) => setNewUsername(event.target.value)}
         />
-        <ButtonWithProgress onClick={onClickSave} apiProgress={apiProgress}>
+        <ButtonWithProgress
+          onClick={onClickSave}
+          apiProgress={updateApiProgress}
+        >
           Save
         </ButtonWithProgress>{' '}
         <button className="btn btn-outline-secondary" onClick={onClickCancel}>
@@ -105,6 +117,8 @@ const ProfileCard = (props) => {
         <Modal
           content="Are you sure to delete your account?"
           onClickCancel={() => setModalVisible(false)}
+          onClickConfirm={onClickDelete}
+          apiProgress={deleteApiProgress}
         />
       )}
     </>

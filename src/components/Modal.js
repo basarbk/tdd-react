@@ -1,10 +1,12 @@
+import ButtonWithProgress from './ButtonWithProgress';
 const Modal = (props) => {
   const {
     content,
     confirmButton,
     cancelButton,
     onClickCancel,
-    onClickConfirm
+    onClickConfirm,
+    apiProgress
   } = props;
   return (
     <div
@@ -25,13 +27,12 @@ const Modal = (props) => {
             >
               {cancelButton}
             </button>
-            <button
-              type="button"
-              className="btn btn-primary"
+            <ButtonWithProgress
               onClick={onClickConfirm}
+              apiProgress={apiProgress}
             >
               {confirmButton}
-            </button>
+            </ButtonWithProgress>
           </div>
         </div>
       </div>
@@ -43,7 +44,8 @@ Modal.defaultProps = {
   confirmButton: 'Yes',
   cancelButton: 'Cancel',
   onClickCancel: () => console.log('onClickCancel is not set'),
-  onClickConfirm: () => console.log('onClickConfirm is not set')
+  onClickConfirm: () => console.log('onClickConfirm is not set'),
+  apiProgress: false
 };
 
 export default Modal;

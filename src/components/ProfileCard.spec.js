@@ -13,6 +13,11 @@ const server = setupServer(
     requestBody = req.body;
     header = req.headers.get('Authorization');
     return res(ctx.status(200));
+  }),
+  rest.delete('/api/1.0/users/:id', (req, res, ctx) => {
+    id = req.params.id;
+    header = req.headers.get('Authorization');
+    return res(ctx.status(200));
   })
 );
 
@@ -228,5 +233,28 @@ describe('Profile Card', () => {
     userEvent.click(screen.queryByRole('button', { name: 'Cancel' }));
     const modal = screen.queryByTestId('modal');
     expect(modal).not.toBeInTheDocument();
+  });
+  it('displays spinner while delete api call in progress', async () => {
+    setup();
+    const deleteButton = screen.queryByRole('button', {
+      name: 'Delete My Account'
+    });
+    userEvent.click(deleteButton);
+    expect(screen.queryByRole('status')).not.toBeInTheDocument();
+    userEvent.click(screen.queryByRole('button', { name: 'Yes' }));
+    const spinner = screen.getByRole('status');
+    await waitForElementToBeRemoved(spinner);
+  });
+  it('sends logged in user id and authorization header in delete api call', async () => {
+    setup();
+    const deleteButton = screen.queryByRole('button', {
+      name: 'Delete My Account'
+    });
+    userEvent.click(deleteButton);
+    userEvent.click(screen.queryByRole('button', { name: 'Yes' }));
+    const spinner = screen.getByRole('status');
+    await waitForElementToBeRemoved(spinner);
+    expect(header).toBe('auth header value');
+    expect(id).toBe('5');
   });
 });
