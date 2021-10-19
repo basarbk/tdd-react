@@ -6,6 +6,7 @@ import ButtonWithProgress from '../components/ButtonWithProgress';
 import { useTranslation } from 'react-i18next';
 import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
+import { loginSuccess } from '../state/authActions';
 
 const LoginPage = (props) => {
   const [email, setEmail] = useState();
@@ -29,13 +30,12 @@ const LoginPage = (props) => {
     try {
       const response = await login({ email, password });
       history.push('/');
-      dispatch({
-        type: 'login-success',
-        payload: {
+      dispatch(
+        loginSuccess({
           ...response.data,
           header: `Bearer ${response.data.token}`
-        }
-      });
+        })
+      );
     } catch (error) {
       setFailMessage(error.response.data.message);
     }
